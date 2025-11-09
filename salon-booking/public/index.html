@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GlowUp Salon — Book Your Appointment</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="hero">
+    <div class="container hero-inner">
+      <h1>GlowUp Salon</h1>
+      <p>Cut • Color • Care — book in seconds.</p>
+      <a href="#book" class="btn">Book Now</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="cards">
+      <article class="card">
+        <h3>Haircut & Styling</h3>
+        <p>Precision cuts, blowouts, and signature styles.</p>
+        <span class="pill">From RM30</span>
+      </article>
+      <article class="card">
+        <h3>Color & Highlights</h3>
+        <p>Balayage, highlights, and glossy color refresh.</p>
+        <span class="pill">From RM120</span>
+      </article>
+      <article class="card">
+        <h3>Treatments</h3>
+        <p>Deep conditioning, scalp therapy, and keratin.</p>
+        <span class="pill">From RM80</span>
+      </article>
+    </section>
+
+    <section id="book" class="booking">
+      <h2>Book an Appointment</h2>
+      <form id="booking-form">
+        <div class="grid">
+          <label>
+            <span>Name*</span>
+            <input name="name" required placeholder="Ayan R."/>
+          </label>
+          <label>
+            <span>Phone*</span>
+            <input name="phone" required placeholder="+60..."/>
+          </label>
+          <label>
+            <span>Email</span>
+            <input name="email" type="email" placeholder="you@example.com"/>
+          </label>
+          <label>
+            <span>Service*</span>
+            <select name="service" required>
+              <option value="">Choose</option>
+              <option>Haircut</option>
+              <option>Blowout</option>
+              <option>Highlights</option>
+              <option>Balayage</option>
+              <option>Scalp Treatment</option>
+              <option>Keratin Treatment</option>
+            </select>
+          </label>
+          <label>
+            <span>Staff*</span>
+            <select name="staff" required>
+              <option value="">Choose</option>
+              <option>Alia</option>
+              <option>Rina</option>
+              <option>Hafiz</option>
+            </select>
+          </label>
+          <label>
+            <span>Date*</span>
+            <input name="date" type="date" required/>
+          </label>
+          <label>
+            <span>Time*</span>
+            <input name="time" type="time" required/>
+          </label>
+          <label class="wide">
+            <span>Notes</span>
+            <textarea name="notes" rows="3" placeholder="Any preferences or details?"></textarea>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="check-btn" class="btn ghost">Check Availability</button>
+          <button type="submit" class="btn">Confirm Booking</button>
+        </div>
+        <p id="status" class="status"></p>
+      </form>
+    </section>
+
+    <section class="faq">
+      <h2>FAQs</h2>
+      <details>
+        <summary>Can I reschedule?</summary>
+        <p>Yes — reply to your confirmation email or contact us 24h in advance.</p>
+      </details>
+      <details>
+        <summary>Do you accept walk‑ins?</summary>
+        <p>We do, but booking ensures your preferred time and stylist.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> GlowUp Salon • Bukit Jalil</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
