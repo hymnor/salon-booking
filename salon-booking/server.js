@@ -39,30 +39,54 @@ function isConflict(bookings, date, time, staff) {
   return bookings.some(b => b.date === date && b.time === time && b.staff === staff);
 }
 
-// Optional email (disabled by default)
-// To enable, set EMAIL_FROM, EMAIL_TO, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in .env
+// ----- Email helper (Resend first, SMTP fallback) -----
 let sendEmail = async () => {};
-if (process.env.SMTP_HOST) {
+
+// Use Resend if key is set (no SMTP, no timeouts)
+if (process.env.RESEND_API_KEY) {
+  const fetch = (...a) => import('node-fetch').then(({ default: f }) => f(...a));
+  sendEmail = async (subject, text) => {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: process.env.EMAIL_FROM,   // e.g. "GlowUp <onboarding@resend.dev>"
+        to: [process.env.EMAIL_TO],
+        subject,
+        text
+      })
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      console.error('Resend error:', res.status, body);
+    } else {
+      console.log('Resend email sent ✅');
+    }
+  };
+// (optional) SMTP fallback if you ever re-add SMTP_* envs
+} else if (process.env.SMTP_HOST) {
   const nodemailer = require('nodemailer');
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587'),
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
     secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    family: 4, connectionTimeout: 20000, greetingTimeout: 10000, socketTimeout: 20000,
+    tls: { minVersion: 'TLSv1.2', rejectUnauthorized: true }
   });
+  transporter.verify()
+    .then(() => console.log('SMTP ready ✅'))
+    .catch(err => console.error('SMTP verify failed ❌', err.message));
   sendEmail = async (subject, text) => {
-    try {
-      await transporter.sendMail({
-        from: process.env.EMAIL_FROM || process.env.SMTP_USER,
-        to: process.env.EMAIL_TO || process.env.SMTP_USER,
-        subject, text
-      });
-    } catch (err) {
-      console.error('Email error:', err.message);
-    }
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_FROM || process.env.SMTP_USER,
+      to: process.env.EMAIL_TO || process.env.SMTP_USER,
+      subject, text
+    });
+    console.log('SMTP email sent ✅', info.messageId);
   };
 }
 
